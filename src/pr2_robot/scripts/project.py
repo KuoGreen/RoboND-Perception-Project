@@ -231,10 +231,10 @@ def pcl_callback(pcl_msg):
     # Could add some logic to determine whether or not your object detections are robust
     # before calling pr2_mover()
     ################################
-    try:
-        pr2_mover(detected_objects_list)
-    except rospy.ROSInterruptException:
-        pass
+    #try:
+    #    pr2_mover(detected_objects_list)
+    #except rospy.ROSInterruptException:
+    #    pass
 
 
     return
@@ -275,7 +275,7 @@ def pr2_mover(object_list):
             print "Service call failed: %s"%e
 
     # TODO: Output your request parameters into output yaml file
-
+        return
 
 if __name__ == '__main__':
     
@@ -285,7 +285,7 @@ if __name__ == '__main__':
 
     # Create Subscribers
     ################################
-    pcl_sub = rospy.Subscriber("/sensor_stick/point_cloud", pc2.PointCloud2, pcl_callback, queue_size=1)
+    pcl_sub = rospy.Subscriber("/camera/depth_registered/points", pc2.PointCloud2, pcl_callback, queue_size=1)
 
     # Create Publishers
     ################################
