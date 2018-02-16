@@ -1,15 +1,14 @@
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
 
-## Project: Perception Pick & Place
+# Project: 3D Perception
 
+### Writeup by Muthanna A. Attyah
+### Feb 2018
 
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/1067/view) Points
 
----
-### Writeup / README
 
-### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
