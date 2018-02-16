@@ -4,6 +4,7 @@
 
 ### Writeup by Muthanna A. Attyah
 ### Feb 2018
+<p align="center"> <img src="./misc/pr2.png"> </p>
 
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/1067/view) Points
