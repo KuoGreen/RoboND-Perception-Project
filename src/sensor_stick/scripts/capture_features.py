@@ -25,20 +25,20 @@ if __name__ == '__main__':
 
     models = [\
         #'arm_part',
-        'beer',
-        #'biscuits',
+        #'beer',
+        'biscuits',
         #'book',
-        'bowl',
-        'create',
-        'disk_part',
+        #'bowl',
+        #'create',
+        #'disk_part',
         #'eraser',
         #'glue',
-        'hammer',
-        'plastic_cup',
+        #'hammer',
+        #'plastic_cup',
         #'snacks',
-        #'soap',
-        #'soap2',
-        'soda_can',
+        'soap',
+        'soap2',
+        #'soda_can',
         #'sticky_notes'
         ]
 
