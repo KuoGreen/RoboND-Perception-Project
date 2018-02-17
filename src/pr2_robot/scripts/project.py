@@ -54,38 +54,8 @@ def pcl_callback(ros_pcl_msg):
 
     # Convert a ROS PointCloud2 message to a pcl PointXYZRGB
     ################################
-    cloud = ros_to_pcl(ros_pcl_msg)
+    cloud_filtered = ros_to_pcl(ros_pcl_msg)
     
-    # Voxel Grid Downsampling filter
-    ################################
-    # Create a VoxelGrid filter object for our input point cloud
-    vox = cloud.make_voxel_grid_filter()
-
-    # Choose a voxel (also known as leaf) size
-    # Note: this (1) means 1mx1mx1m is a poor choice of leaf size   
-    # Experiment and find the appropriate size!
-    LEAF_SIZE = 0.01   
-
-    # Set the voxel (or leaf) size  
-    vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
-
-    # Call the filter function to obtain the resultant downsampled point cloud
-    cloud_filtered = vox.filter()
-
-    # Statistical Outlier Filtering
-    ################################
-    # Create a statistical filter object: 
-    outlier_filter = cloud_filtered.make_statistical_outlier_filter()
-    # Set the number of neighboring points to analyze for any given point
-    outlier_filter.set_mean_k(10)
-    # Set threshold scale factor
-    x = 0.01
-    # Any point with a mean distance larger than global (mean distance+x*std_dev)
-    # will be considered outlier
-    outlier_filter.set_std_dev_mul_thresh(x)
-    # Call the filter function
-    cloud_filtered = outlier_filter.filter()
-
     # PassThrough filter (Z Axis)
     ################################
     # Create a PassThrough filter object.
@@ -93,7 +63,7 @@ def pcl_callback(ros_pcl_msg):
     # Assign axis and range to the passthrough filter object.
     filter_axis = 'z'
     passthrough.set_filter_field_name(filter_axis)
-    axis_min = 0.6
+    axis_min = 0.6095
     axis_max = 1.1
     passthrough.set_filter_limits(axis_min, axis_max)
     # Use the filter function to obtain the resultant point cloud. 
@@ -112,6 +82,38 @@ def pcl_callback(ros_pcl_msg):
     # Use the filter function to obtain the resultant point cloud. 
     cloud_filtered = passthrough.filter()
 
+    '''
+    # Voxel Grid Downsampling filter
+    ################################
+    # Create a VoxelGrid filter object for our input point cloud
+    vox = cloud_filtered.make_voxel_grid_filter()
+
+    # Choose a voxel (also known as leaf) size
+    # Note: this (1) means 1mx1mx1m is a poor choice of leaf size   
+    # Experiment and find the appropriate size!
+    LEAF_SIZE = 0.01   
+
+    # Set the voxel (or leaf) size  
+    vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
+
+    # Call the filter function to obtain the resultant downsampled point cloud
+    cloud_filtered = vox.filter()
+    
+    # Statistical Outlier Filtering
+    ################################
+    # Create a statistical filter object: 
+    outlier_filter = cloud_filtered.make_statistical_outlier_filter()
+    # Set the number of neighboring points to analyze for any given point
+    outlier_filter.set_mean_k(10)
+    # Set threshold scale factor
+    x = 0.01
+    # Any point with a mean distance larger than global (mean distance+x*std_dev)
+    # will be considered outlier
+    outlier_filter.set_std_dev_mul_thresh(x)
+    # Call the filter function
+    cloud_filtered = outlier_filter.filter()
+    '''
+
     # RANSAC plane segmentation
     ################################
     # Create the segmentation object
@@ -122,7 +124,7 @@ def pcl_callback(ros_pcl_msg):
     # Max distance for a point to be considered fitting the model
     # Experiment with different values for max_distance 
     # for segmenting the table
-    max_distance = 0.005
+    max_distance = 0.006
     seg.set_distance_threshold(max_distance)
     # Call the segment function to obtain set of inlier indices and model coefficients
     inliers, coefficients = seg.segment()
@@ -147,7 +149,7 @@ def pcl_callback(ros_pcl_msg):
 
     return
 
-'''
+    '''
 
 
 
@@ -276,7 +278,7 @@ def pcl_callback(ros_pcl_msg):
 
 
     return
-'''
+    '''
 
 '''
 # function to load parameters and request PickPlace service
