@@ -82,7 +82,6 @@ def pcl_callback(ros_pcl_msg):
     # Use the filter function to obtain the resultant point cloud. 
     cloud_filtered = passthrough.filter()
 
-    '''
     # Voxel Grid Downsampling filter
     ################################
     # Create a VoxelGrid filter object for our input point cloud
@@ -91,28 +90,28 @@ def pcl_callback(ros_pcl_msg):
     # Choose a voxel (also known as leaf) size
     # Note: this (1) means 1mx1mx1m is a poor choice of leaf size   
     # Experiment and find the appropriate size!
-    LEAF_SIZE = 0.01   
+    LEAF_SIZE = 0.001   
 
     # Set the voxel (or leaf) size  
     vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
 
     # Call the filter function to obtain the resultant downsampled point cloud
     cloud_filtered = vox.filter()
-    
+
+   
     # Statistical Outlier Filtering
     ################################
     # Create a statistical filter object: 
     outlier_filter = cloud_filtered.make_statistical_outlier_filter()
     # Set the number of neighboring points to analyze for any given point
-    outlier_filter.set_mean_k(10)
+    outlier_filter.set_mean_k(50)
     # Set threshold scale factor
-    x = 0.01
+    x = 2
     # Any point with a mean distance larger than global (mean distance+x*std_dev)
     # will be considered outlier
     outlier_filter.set_std_dev_mul_thresh(x)
     # Call the filter function
     cloud_filtered = outlier_filter.filter()
-    '''
 
     # RANSAC plane segmentation
     ################################
