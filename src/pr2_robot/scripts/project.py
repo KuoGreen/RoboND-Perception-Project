@@ -56,38 +56,6 @@ def pcl_callback(ros_pcl_msg):
     ################################
     cloud = ros_to_pcl(ros_pcl_msg)
     
-    # Statistical Outlier Filtering
-    ################################
-
-    # Start by creating a filter object: 
-    outlier_filter = cloud.make_statistical_outlier_filter()
-    # Set the number of neighboring points to analyze for any given point
-    outlier_filter.set_mean_k(50)
-    # Set threshold scale factor
-    x = 0.05
-    # Any point with a mean distance larger than global (mean distance+x*std_dev)
-    # will be considered outlier
-    outlier_filter.set_std_dev_mul_thresh(x)
-    # Call the filter function
-    cloud_filtered = outlier_filter.filter()
-
-
-
-    # Converts a pcl PointXYZRGB to a ROS PointCloud2 message
-    ################################
-    ros_cloud_objects = pcl_to_ros(cloud_filtered)
-    ros_cloud_table   = pcl_to_ros(cloud_filtered)
-    ros_cluster_cloud = pcl_to_ros(cloud_filtered)
-
-    # Publish ROS messages
-    ################################
-    pcl_objects_pub.publish(ros_cloud_objects)
-    pcl_table_pub.publish(ros_cloud_table)
-    pcl_cluster_pub.publish(ros_cluster_cloud)
-
-    return
-
-'''
     # Voxel Grid Downsampling filter
     ################################
     # Create a VoxelGrid filter object for our input point cloud
@@ -104,50 +72,90 @@ def pcl_callback(ros_pcl_msg):
     # Call the filter function to obtain the resultant downsampled point cloud
     cloud_filtered = vox.filter()
 
-    # PassThrough filter
+    # Statistical Outlier Filtering
+    ################################
+    # Create a statistical filter object: 
+    outlier_filter = cloud_filtered.make_statistical_outlier_filter()
+    # Set the number of neighboring points to analyze for any given point
+    outlier_filter.set_mean_k(10)
+    # Set threshold scale factor
+    x = 0.01
+    # Any point with a mean distance larger than global (mean distance+x*std_dev)
+    # will be considered outlier
+    outlier_filter.set_std_dev_mul_thresh(x)
+    # Call the filter function
+    cloud_filtered = outlier_filter.filter()
+
+    # PassThrough filter (Z Axis)
     ################################
     # Create a PassThrough filter object.
     passthrough = cloud_filtered.make_passthrough_filter()
-
     # Assign axis and range to the passthrough filter object.
     filter_axis = 'z'
     passthrough.set_filter_field_name(filter_axis)
-    axis_min = 0.76
+    axis_min = 0.6
     axis_max = 1.1
     passthrough.set_filter_limits(axis_min, axis_max)
+    # Use the filter function to obtain the resultant point cloud. 
+    cloud_filtered = passthrough.filter()
 
-    # Finally use the filter function to obtain the resultant point cloud. 
+    # PassThrough filter (Y Axis)
+    ################################
+    # Create a PassThrough filter object.
+    passthrough = cloud_filtered.make_passthrough_filter()
+    # Assign axis and range to the passthrough filter object.
+    filter_axis = 'y'
+    passthrough.set_filter_field_name(filter_axis)
+    axis_min = -0.45
+    axis_max =  0.45
+    passthrough.set_filter_limits(axis_min, axis_max)
+    # Use the filter function to obtain the resultant point cloud. 
     cloud_filtered = passthrough.filter()
 
     # RANSAC plane segmentation
     ################################
     # Create the segmentation object
     seg = cloud_filtered.make_segmenter()
-
     # Set the model you wish to fit 
     seg.set_model_type(pcl.SACMODEL_PLANE)
     seg.set_method_type(pcl.SAC_RANSAC)
-
     # Max distance for a point to be considered fitting the model
     # Experiment with different values for max_distance 
     # for segmenting the table
-    max_distance = 0.01
+    max_distance = 0.005
     seg.set_distance_threshold(max_distance)
-
     # Call the segment function to obtain set of inlier indices and model coefficients
     inliers, coefficients = seg.segment()
+    # Extract inliers (Table)
+    extracted_objects = cloud_filtered.extract(inliers, negative=False)
+    # Extract outliers (Tabletop Objects)
+    extracted_table = cloud_filtered.extract(inliers, negative=True)
 
-    # Extract inliers
-    # pcd for table
-    ################################
-    extracted_inliers = cloud_filtered.extract(inliers, negative=False)
 
-    # Extract outliers
-    # pcd for tabletop objects
+
+    # Converts a pcl PointXYZRGB to a ROS PointCloud2 message
     ################################
-    extracted_outliers = cloud_filtered.extract(inliers, negative=True)
+    ros_cloud_objects = pcl_to_ros(extracted_table)
+    ros_cloud_table   = pcl_to_ros(extracted_objects)
+    ros_cluster_cloud = pcl_to_ros(cloud_filtered)
+
+    # Publish ROS messages
+    ################################
+    pcl_objects_pub.publish(ros_cloud_objects)
+    pcl_table_pub.publish(ros_cloud_table)
+    pcl_cluster_pub.publish(ros_cluster_cloud)
+
+    return
+
+'''
+
+
+
+
+
 
     # Euclidean Clustering
+    ################################
     white_cloud = XYZRGB_to_XYZ(extracted_outliers)
     tree = white_cloud.make_kdtree()
 
