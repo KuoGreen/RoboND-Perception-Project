@@ -10,11 +10,28 @@
 ## [Rubric](https://review.udacity.com/#!/rubrics/1067/view) Points
 
 
-#### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
 
-#### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
+# The processing pipeline
 
-#### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
+## Convert ROS msg to PCL data
+
+## Statistical Outlier Filtering
+
+## Voxel Grid Downsampling
+
+## PassThrough Filter
+
+## RANSAC Plane Segmentation
+
+## Extract inliers and outliers
+
+## Euclidean Clustering
+
+## Create Cluster-Mask Point Cloud to visualize each cluster separately
+
+## Convert PCL data to ROS messages
+
+## Publish ROS messages
 
 
 ### Pick and Place Setup
