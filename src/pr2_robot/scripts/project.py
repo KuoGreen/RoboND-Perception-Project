@@ -127,7 +127,7 @@ def pcl_callback(ros_pcl_msg):
     # Call the segment function to obtain set of inlier indices and model coefficients
     inliers, coefficients = seg.segment()
     # Extract inliers (Table)
-    extracted_table = cloud_filtered.extract(inliers, negative=False)
+    extracted_table   = cloud_filtered.extract(inliers, negative=False)
     # Extract outliers (Tabletop Objects)
     extracted_objects = cloud_filtered.extract(inliers, negative=True)
 
@@ -140,11 +140,9 @@ def pcl_callback(ros_pcl_msg):
     ec = white_cloud.make_EuclideanClusterExtraction()
     # Set tolerances for distance threshold 
     # as well as minimum and maximum cluster size (in points)
-    # NOTE: These are poor choices of clustering parameters
-    # Your task is to experiment and find values that work for segmenting objects.
-    ec.set_ClusterTolerance(0.001)
+    ec.set_ClusterTolerance(0.02)
     ec.set_MinClusterSize(10)
-    ec.set_MaxClusterSize(3000)
+    ec.set_MaxClusterSize(9000)
     # Search the k-d tree for clusters
     ec.set_SearchMethod(tree)
     # Extract indices for each of the discovered clusters
@@ -164,7 +162,6 @@ def pcl_callback(ros_pcl_msg):
                                              rgb_to_float(cluster_color[j])])
 
     # Create new cloud containing all clusters, each with unique color
-    ################################
     cluster_cloud = pcl.PointCloud_PointXYZRGB()
     cluster_cloud.from_list(color_cluster_point_list)
 
