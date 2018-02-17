@@ -128,36 +128,13 @@ def pcl_callback(ros_pcl_msg):
     # Call the segment function to obtain set of inlier indices and model coefficients
     inliers, coefficients = seg.segment()
     # Extract inliers (Table)
-    extracted_objects = cloud_filtered.extract(inliers, negative=False)
+    extracted_table = cloud_filtered.extract(inliers, negative=False)
     # Extract outliers (Tabletop Objects)
-    extracted_table = cloud_filtered.extract(inliers, negative=True)
-
-
-
-    # Converts a pcl PointXYZRGB to a ROS PointCloud2 message
-    ################################
-    ros_cloud_objects = pcl_to_ros(extracted_table)
-    ros_cloud_table   = pcl_to_ros(extracted_objects)
-    ros_cluster_cloud = pcl_to_ros(cloud_filtered)
-
-    # Publish ROS messages
-    ################################
-    pcl_objects_pub.publish(ros_cloud_objects)
-    pcl_table_pub.publish(ros_cloud_table)
-    pcl_cluster_pub.publish(ros_cluster_cloud)
-
-    return
-
-    '''
-
-
-
-
-
+    extracted_objects = cloud_filtered.extract(inliers, negative=True)
 
     # Euclidean Clustering
     ################################
-    white_cloud = XYZRGB_to_XYZ(extracted_outliers)
+    white_cloud = XYZRGB_to_XYZ(extracted_objects)
     tree = white_cloud.make_kdtree()
 
     # Create a cluster extraction object
@@ -168,7 +145,7 @@ def pcl_callback(ros_pcl_msg):
     # as well as minimum and maximum cluster size (in points)
     # NOTE: These are poor choices of clustering parameters
     # Your task is to experiment and find values that work for segmenting objects.
-    ec.set_ClusterTolerance(0.03)
+    ec.set_ClusterTolerance(0.001)
     ec.set_MinClusterSize(10)
     ec.set_MaxClusterSize(3000)
     
@@ -199,8 +176,8 @@ def pcl_callback(ros_pcl_msg):
 
     # Converts a pcl PointXYZRGB to a ROS PointCloud2 message
     ################################
-    ros_cloud_objects = pcl_to_ros(extracted_outliers)
-    ros_cloud_table   = pcl_to_ros(extracted_inliers)
+    ros_cloud_objects = pcl_to_ros(extracted_objects)
+    ros_cloud_table   = pcl_to_ros(extracted_table)
     ros_cluster_cloud = pcl_to_ros(cluster_cloud)
 
     # Publish ROS messages
@@ -220,7 +197,7 @@ def pcl_callback(ros_pcl_msg):
     for index, pts_list in enumerate(cluster_indices):
 
         # Grab the points for the cluster from the extracted outliers (cloud_objects)
-        pcl_cluster = extracted_outliers.extract(pts_list)
+        pcl_cluster = extracted_objects.extract(pts_list)
         
         # Convert the cluster from pcl to ROS using helper function
         ros_cluster = pcl_to_ros(pcl_cluster)
@@ -274,10 +251,9 @@ def pcl_callback(ros_pcl_msg):
     #    pr2_mover(detected_objects_list)
     #except rospy.ROSInterruptException:
     #    pass
-
-
+   
     return
-    '''
+    
 
 '''
 # function to load parameters and request PickPlace service
