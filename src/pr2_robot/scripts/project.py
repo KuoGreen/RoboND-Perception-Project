@@ -47,17 +47,47 @@ def send_to_yaml(yaml_filename, dict_list):
         yaml.dump(data_dict, outfile, default_flow_style=False)
 
 # Callback function for your Point Cloud Subscriber
-def pcl_callback(pcl_msg):
-
+def pcl_callback(ros_pcl_msg):
+    
     # Exercise-2
     ################################
 
-    # Convert ROS msg to PCL data
+    # Convert a ROS PointCloud2 message to a pcl PointXYZRGB
     ################################
-    cloud = ros_to_pcl(pcl_msg)
+    cloud = ros_to_pcl(ros_pcl_msg)
     
-    # TODO: Statistical Outlier Filtering
+    # Statistical Outlier Filtering
+    ################################
 
+    # Start by creating a filter object: 
+    outlier_filter = cloud.make_statistical_outlier_filter()
+    # Set the number of neighboring points to analyze for any given point
+    outlier_filter.set_mean_k(50)
+    # Set threshold scale factor
+    x = 0.05
+    # Any point with a mean distance larger than global (mean distance+x*std_dev)
+    # will be considered outlier
+    outlier_filter.set_std_dev_mul_thresh(x)
+    # Call the filter function
+    cloud_filtered = outlier_filter.filter()
+
+
+
+    # Converts a pcl PointXYZRGB to a ROS PointCloud2 message
+    ################################
+    ros_cloud_objects = pcl_to_ros(cloud_filtered)
+    ros_cloud_table   = pcl_to_ros(cloud_filtered)
+    ros_cluster_cloud = pcl_to_ros(cloud_filtered)
+
+    # Publish ROS messages
+    ################################
+    pcl_objects_pub.publish(ros_cloud_objects)
+    pcl_table_pub.publish(ros_cloud_table)
+    pcl_cluster_pub.publish(ros_cluster_cloud)
+
+    return
+
+'''
     # Voxel Grid Downsampling filter
     ################################
     # Create a VoxelGrid filter object for our input point cloud
@@ -73,7 +103,7 @@ def pcl_callback(pcl_msg):
 
     # Call the filter function to obtain the resultant downsampled point cloud
     cloud_filtered = vox.filter()
-        
+
     # PassThrough filter
     ################################
     # Create a PassThrough filter object.
@@ -158,7 +188,7 @@ def pcl_callback(pcl_msg):
     cluster_cloud = pcl.PointCloud_PointXYZRGB()
     cluster_cloud.from_list(color_cluster_point_list)
 
-    # Convert PCL data to ROS messages
+    # Converts a pcl PointXYZRGB to a ROS PointCloud2 message
     ################################
     ros_cloud_objects = pcl_to_ros(extracted_outliers)
     ros_cloud_table   = pcl_to_ros(extracted_inliers)
@@ -238,7 +268,9 @@ def pcl_callback(pcl_msg):
 
 
     return
+'''
 
+'''
 # function to load parameters and request PickPlace service
 def pr2_mover(object_list):
 
@@ -275,8 +307,8 @@ def pr2_mover(object_list):
             print "Service call failed: %s"%e
 
     # TODO: Output your request parameters into output yaml file
-        return
-
+    return
+'''
 if __name__ == '__main__':
     
     # ROS node initialization
@@ -285,7 +317,7 @@ if __name__ == '__main__':
 
     # Create Subscribers
     ################################
-    pcl_sub = rospy.Subscriber("/camera/depth_registered/points", pc2.PointCloud2, pcl_callback, queue_size=1)
+    pcl_sub = rospy.Subscriber("/pr2/world/points", pc2.PointCloud2, pcl_callback, queue_size=1)
 
     # Create Publishers
     ################################
