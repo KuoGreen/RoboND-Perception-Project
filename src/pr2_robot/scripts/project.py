@@ -179,51 +179,53 @@ def pcl_callback(ros_pcl_msg):
     pcl_table_pub.publish(ros_cloud_table)
     pcl_cluster_pub.publish(ros_cluster_cloud)
 
-    # Exercise-3: 
-    ################################
-
+    #----------------------------------------------------------------------------------
     # Classify the clusters!
-    ################################
+    #----------------------------------------------------------------------------------
     detected_objects_labels = []
     detected_objects = []
 
     for index, pts_list in enumerate(cluster_indices):
 
-        # Grab the points for the cluster from the extracted outliers (cloud_objects)
+        #----------------------------------------------------------------------------------
+        # Grab the points for the cluster from the extracted_objects
+        #----------------------------------------------------------------------------------
         pcl_cluster = extracted_objects.extract(pts_list)
-        
         # Convert the cluster from pcl to ROS using helper function
         ros_cluster = pcl_to_ros(pcl_cluster)
 
-        # Extract histogram features
-        ################################
-        # Generate Color hist
+        #----------------------------------------------------------------------------------
+        # Generate Histograms
+        #----------------------------------------------------------------------------------
+        # Color Histogram
         c_hists = compute_color_histograms(ros_cluster, using_hsv=True)
-        
-        # Generate normals and notmal histograms for the spawned model
-        ################################
+        # Normals Histogram
         normals = get_normals(ros_cluster)
         n_hists = compute_normal_histograms(normals)
         
+        #----------------------------------------------------------------------------------
         # Generate feature by concatenate of color and normals.
-        ################################
+        #----------------------------------------------------------------------------------
         feature = np.concatenate((c_hists, n_hists))
         
-        # Make the prediction, retrieve the label for the result
-        # and add it to detected_objects_labels list
-        ################################
+        #----------------------------------------------------------------------------------
+        # Make the prediction
+        #----------------------------------------------------------------------------------
+        # Retrieve the label for the result and add it to detected_objects_labels list
         prediction = clf.predict(scaler.transform(feature.reshape(1,-1)))
         label = encoder.inverse_transform(prediction)[0]
         detected_objects_labels.append(label)
 
+        #----------------------------------------------------------------------------------
         # Publish a label into RViz
-        ################################
+        #----------------------------------------------------------------------------------
         label_pos = list(white_cloud[pts_list[0]])
-        label_pos[2] += .4
+        label_pos[2] += .2
         object_markers_pub.publish(make_label(label,label_pos, index))
 
+
         # Add the detected object to the list of detected objects.
-        ################################
+        #----------------------------------------------------------------------------------
         do = DetectedObject()
         do.label = label
         do.cloud = ros_cluster
@@ -231,9 +233,9 @@ def pcl_callback(ros_pcl_msg):
 
     rospy.loginfo('Detected {} objects: {}'.format(len(detected_objects_labels), detected_objects_labels))
 
+    #----------------------------------------------------------------------------------
     # Publish the list of detected objects
-    # This is the output you'll need to complete the upcoming project!
-    ################################
+    #----------------------------------------------------------------------------------
     detected_objects_pub.publish(detected_objects)
 
     # Suggested location for where to invoke your pr2_mover() function within pcl_callback()
