@@ -46,6 +46,12 @@ def send_to_yaml(yaml_filename, dict_list):
     with open(yaml_filename, 'w') as outfile:
         yaml.dump(data_dict, outfile, default_flow_style=False)
 
+# Function to search list of dictionaries and return a selected value in selected dictionary
+def search_dictionaries(key1, value1, key2, list_of_dictionaries):
+    selected_dic = [element for element in list_of_dictionaries if element[key1] == value1][0]
+    selected_val = selected_dic.get(key2)
+    return selected_val
+
 # Callback function for your Point Cloud Subscriber
 def pcl_callback(ros_pcl_msg):
     
@@ -160,7 +166,6 @@ def pcl_callback(ros_pcl_msg):
                                              white_cloud[indice][1],
                                              white_cloud[indice][2],
                                              rgb_to_float(cluster_color[j])])
-
     # Create new cloud containing all clusters, each with unique color
     cluster_cloud = pcl.PointCloud_PointXYZRGB()
     cluster_cloud.from_list(color_cluster_point_list)
@@ -253,28 +258,64 @@ def pcl_callback(ros_pcl_msg):
 #----------------------------------------------------------------------------------
 def pr2_mover(object_list):
 
+    #----------------------------------------------------------------------------------
     # Initialize variables
+    #----------------------------------------------------------------------------------
     test_scene_num = Int32()
     object_name    = String()
     pick_pose      = Pose()
     place_pose     = Pose()
+    arm_name       = String()
     dict_list = []
-    
+        
+    test_scene_num.data = 1
+
+    #----------------------------------------------------------------------------------
+    # Calculate detected objects centroids.
+    #----------------------------------------------------------------------------------
+    labels = []
+    centroids = [] # to be list of tuples (x, y, z)
+    for object in object_list:
+        labels.append(object.label)
+        points_arr = ros_to_pcl(object.cloud).to_array()
+        centroids.append(np.mean(points_arr, axis=0)[:3])
+
+    #----------------------------------------------------------------------------------
     # Get Parameters
+    #----------------------------------------------------------------------------------
     object_list_param = rospy.get_param('/object_list')
     dropbox_param     = rospy.get_param('/dropbox')
 
+
     # TODO: Rotate PR2 in place to capture side tables for the collision map
 
-        
-    # Loop through the pick list
-    for i in range(0, len(object_list_param)):
-        # TODO: Create 'place_pose' for the object
 
-        # TODO: Assign the arm to be used for pick_place
+    #----------------------------------------------------------------------------------
+    # Loop through the pick list
+    #----------------------------------------------------------------------------------
+    for i in range(0, len(object_list_param)):
+        
+        # Read object name and group from object list.
+        object_name.data = object_list_param[i]['name' ]
+        object_group     = object_list_param[i]['group']
+
+        # Select pick pose
+        index = labels.index(object_name.data)
+        pick_pose.position.x = np.asscalar(centroids[index][0])
+        pick_pose.position.y = np.asscalar(centroids[index][1])
+        pick_pose.position.z = np.asscalar(centroids[index][2])
+
+        # Select place pose
+        position = search_dictionaries('group', object_group, 'position', dropbox_param)
+        place_pose.position.x = position[0]
+        place_pose.position.y = position[1]
+        place_pose.position.z = position[2]
+
+        # Select the arm to be used for pick_place
+        arm_name.data = search_dictionaries('group', object_group, 'name', dropbox_param)
 
         # Create a list of dictionaries (made with make_yaml_dict()) for later output to yaml format
-        yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
+        yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose.position, place_pose.position)
         dict_list.append(yaml_dict)
 
         # Wait for 'pick_place_routine' service to come up
@@ -282,7 +323,7 @@ def pr2_mover(object_list):
         try:
             pick_place_routine = rospy.ServiceProxy('pick_place_routine', PickPlace)
             # Insert your message variables to be sent as a service request
-            resp = pick_place_routine(test_scene_num, object_name, WHICH_ARM, pick_pose, place_pose)
+            resp = pick_place_routine(test_scene_num, object_name, arm_name, pick_pose, place_pose)
             print ("Response: ",resp.success)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
@@ -292,21 +333,24 @@ def pr2_mover(object_list):
     yaml_filename = 'test.yaml'
     send_to_yaml(yaml_filename, dict_list)
 
-
     return
+    #----------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     
+    #----------------------------------------------------------------------------------
     # ROS node initialization
-    ################################
+    #----------------------------------------------------------------------------------
     rospy.init_node('clustering', anonymous=True)
 
+    #----------------------------------------------------------------------------------
     # Create Subscribers
-    ################################
+    #----------------------------------------------------------------------------------
     pcl_sub = rospy.Subscriber("/pr2/world/points", pc2.PointCloud2, pcl_callback, queue_size=1)
 
+    #----------------------------------------------------------------------------------
     # Create Publishers
-    ################################
+    #----------------------------------------------------------------------------------
     pcl_objects_pub      = rospy.Publisher("/pcl_objects"     , PointCloud2,          queue_size=1)
     pcl_table_pub        = rospy.Publisher("/pcl_table"       , PointCloud2,          queue_size=1)
     pcl_cluster_pub      = rospy.Publisher("/pcl_cluster"     , PointCloud2,          queue_size=1)
@@ -316,14 +360,19 @@ if __name__ == '__main__':
     # Initialize color_list
     get_color_list.color_list = []
 
+    #----------------------------------------------------------------------------------
     # Load Model From disk
+    #----------------------------------------------------------------------------------
     model = pickle.load(open('model.sav', 'rb'))
     clf = model['classifier']
     encoder = LabelEncoder()
     encoder.classes_ = model['classes']
     scaler = model['scaler']
 
+    #----------------------------------------------------------------------------------
     # Spin while node is not shutdown
-    ################################
+    #----------------------------------------------------------------------------------
     while not rospy.is_shutdown():
         rospy.spin()
+
+    #----------------------------------------------------------------------------------
