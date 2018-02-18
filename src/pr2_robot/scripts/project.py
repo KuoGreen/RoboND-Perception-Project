@@ -41,8 +41,8 @@ def make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
     return yaml_dict
 
 # Helper function to output to yaml file
-def send_to_yaml(yaml_filename, dict_list):
-    data_dict = {"object_list": dict_list}
+def send_to_yaml(yaml_filename, yaml_dict_list):
+    data_dict = {"object_list": yaml_dict_list}
     with open(yaml_filename, 'w') as outfile:
         yaml.dump(data_dict, outfile, default_flow_style=False)
 
@@ -246,11 +246,14 @@ def pcl_callback(ros_pcl_msg):
     #----------------------------------------------------------------------------------
     # Invoke pr2_mover() function
     #----------------------------------------------------------------------------------
-    try:
-        pr2_mover(detected_objects)
-    except rospy.ROSInterruptException:
-        pass
-   
+    if len(detected_objects)>0:
+        try:
+            pr2_mover(detected_objects)
+        except rospy.ROSInterruptException:
+            pass
+    else:
+        rospy.logwarn('No detected objects !!!')
+    
     return
     
 #----------------------------------------------------------------------------------
@@ -266,8 +269,9 @@ def pr2_mover(object_list):
     pick_pose      = Pose()
     place_pose     = Pose()
     arm_name       = String()
-    dict_list = []
-        
+    yaml_dict_list = []
+    
+    # Update test scene number based on the selected test.
     test_scene_num.data = 1
 
     #----------------------------------------------------------------------------------
@@ -286,14 +290,15 @@ def pr2_mover(object_list):
     object_list_param = rospy.get_param('/object_list')
     dropbox_param     = rospy.get_param('/dropbox')
 
-
+    #----------------------------------------------------------------------------------
     # TODO: Rotate PR2 in place to capture side tables for the collision map
-
+    #----------------------------------------------------------------------------------
 
     #----------------------------------------------------------------------------------
     # Loop through the pick list
     #----------------------------------------------------------------------------------
     for i in range(0, len(object_list_param)):
+        
         
         # Read object name and group from object list.
         object_name.data = object_list_param[i]['name' ]
@@ -314,9 +319,9 @@ def pr2_mover(object_list):
         # Select the arm to be used for pick_place
         arm_name.data = search_dictionaries('group', object_group, 'name', dropbox_param)
 
-        # Create a list of dictionaries (made with make_yaml_dict()) for later output to yaml format
-        yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose.position, place_pose.position)
-        dict_list.append(yaml_dict)
+        # Create a list of dictionaries for later output to yaml format
+        yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
+        yaml_dict_list.append(yaml_dict)
 
         # Wait for 'pick_place_routine' service to come up
         rospy.wait_for_service('pick_place_routine')
@@ -328,16 +333,18 @@ def pr2_mover(object_list):
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
 
-    
+
+    #----------------------------------------------------------------------------------
     # Output your request parameters into output yaml file
-    yaml_filename = 'test.yaml'
-    send_to_yaml(yaml_filename, dict_list)
+    #----------------------------------------------------------------------------------
+    yaml_filename = 'output_'+str(test_scene_num.data)+'.yaml'
+    send_to_yaml(yaml_filename, yaml_dict_list)
 
     return
-    #----------------------------------------------------------------------------------
+
 
 if __name__ == '__main__':
-    
+
     #----------------------------------------------------------------------------------
     # ROS node initialization
     #----------------------------------------------------------------------------------
