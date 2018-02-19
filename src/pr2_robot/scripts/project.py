@@ -291,9 +291,14 @@ def pr2_mover(object_list):
     dropbox_param     = rospy.get_param('/dropbox')
 
     #----------------------------------------------------------------------------------
-    # TODO: Rotate PR2 in place to capture side tables for the collision map
+    # Rotate PR2 in place to capture side tables for the collision map
     #----------------------------------------------------------------------------------
-
+    # Rotate left
+    pr2_base_mover_pub.publish(-1.57)
+    # Rotate Right
+    pr2_base_mover_pub.publish(1.57)
+    # Rotate Center
+    pr2_base_mover_pub.publish(0)
     #----------------------------------------------------------------------------------
     # Loop through the pick list
     #----------------------------------------------------------------------------------
@@ -363,6 +368,7 @@ if __name__ == '__main__':
     pcl_cluster_pub      = rospy.Publisher("/pcl_cluster"     , PointCloud2,          queue_size=1)
     object_markers_pub   = rospy.Publisher("/object_markers"  , Marker,               queue_size=1)
     detected_objects_pub = rospy.Publisher("/detected_objects", DetectedObjectsArray, queue_size=1)
+    pr2_base_mover_pub   = rospy.Publisher("/pr2/world_joint_controller/command", Float64, queue_size=10))
 
     # Initialize color_list
     get_color_list.color_list = []
