@@ -368,7 +368,7 @@ if __name__ == '__main__':
     pcl_cluster_pub      = rospy.Publisher("/pcl_cluster"     , PointCloud2,          queue_size=1)
     object_markers_pub   = rospy.Publisher("/object_markers"  , Marker,               queue_size=1)
     detected_objects_pub = rospy.Publisher("/detected_objects", DetectedObjectsArray, queue_size=1)
-    pr2_base_mover_pub   = rospy.Publisher("/pr2/world_joint_controller/command", Float64, queue_size=10))
+    pr2_base_mover_pub   = rospy.Publisher("/pr2/world_joint_controller/command", Float64, queue_size=10)
 
     # Initialize color_list
     get_color_list.color_list = []

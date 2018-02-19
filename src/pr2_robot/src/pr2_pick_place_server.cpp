@@ -421,8 +421,8 @@ bool PR2PickPlace::OperateRightGripper(const bool &close_gripper)
   // Set finger joint values
   if (close_gripper)
   {
-    gripper_joint_positions[0] = 0.04;
-    gripper_joint_positions[1] = 0.04;
+    gripper_joint_positions[0] = 0.02; // changed to fix grasp issue
+    gripper_joint_positions[1] = 0.02; // changed to fix grasp issue
   }
   else
   {
