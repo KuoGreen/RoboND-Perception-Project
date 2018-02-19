@@ -295,10 +295,13 @@ def pr2_mover(object_list):
     #----------------------------------------------------------------------------------
     # Rotate left
     pr2_base_mover_pub.publish(-1.57)
+    rospy.sleep(1.0)
     # Rotate Right
     pr2_base_mover_pub.publish(1.57)
+    rospy.sleep(1.0)
     # Rotate Center
     pr2_base_mover_pub.publish(0)
+    
     #----------------------------------------------------------------------------------
     # Loop through the pick list
     #----------------------------------------------------------------------------------
