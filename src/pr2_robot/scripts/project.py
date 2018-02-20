@@ -275,6 +275,24 @@ def pr2_mover(object_list):
     test_scene_num.data = 1
 
     #----------------------------------------------------------------------------------
+    # Get Parameters
+    #----------------------------------------------------------------------------------
+    object_list_param = rospy.get_param('/object_list')
+    dropbox_param     = rospy.get_param('/dropbox')
+
+    #----------------------------------------------------------------------------------
+    # Rotate PR2 in place to capture side tables for the collision map
+    #----------------------------------------------------------------------------------
+    # Rotate Right
+    pr2_base_mover_pub.publish(-1.57)
+    rospy.sleep(15.0)
+    # Rotate Left
+    pr2_base_mover_pub.publish(1.57)
+    rospy.sleep(30.0)
+    # Rotate Center
+    pr2_base_mover_pub.publish(0)
+
+    #----------------------------------------------------------------------------------
     # Calculate detected objects centroids.
     #----------------------------------------------------------------------------------
     labels = []
@@ -284,24 +302,6 @@ def pr2_mover(object_list):
         points_arr = ros_to_pcl(object.cloud).to_array()
         centroids.append(np.mean(points_arr, axis=0)[:3])
 
-    #----------------------------------------------------------------------------------
-    # Get Parameters
-    #----------------------------------------------------------------------------------
-    object_list_param = rospy.get_param('/object_list')
-    dropbox_param     = rospy.get_param('/dropbox')
-
-    #----------------------------------------------------------------------------------
-    # Rotate PR2 in place to capture side tables for the collision map
-    #----------------------------------------------------------------------------------
-    # Rotate left
-    pr2_base_mover_pub.publish(-1.57)
-    rospy.sleep(1.0)
-    # Rotate Right
-    pr2_base_mover_pub.publish(1.57)
-    rospy.sleep(1.0)
-    # Rotate Center
-    pr2_base_mover_pub.publish(0)
-    
     #----------------------------------------------------------------------------------
     # Loop through the pick list
     #----------------------------------------------------------------------------------
