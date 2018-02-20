@@ -15,23 +15,51 @@
 
 ## Convert ROS msg to PCL data
 
+<p align="center"> <img src="./misc/rviz_world_points.png"> </p>
+
+
 ## Statistical Outlier Filtering
+
+<p align="center"> <img src="./misc/rviz_statstical_filter.png"> </p>
 
 ## Voxel Grid Downsampling
 
+<p align="center"> <img src="./misc/rviz_voxel_filter.png"> </p>
+
 ## PassThrough Filter
+
+<p align="center"> <img src="./misc/rviz_passthrough_z_filter.png"> </p>
+
+<p align="center"> <img src="./misc/rviz_passthrough_y_filter.png"> </p>
 
 ## RANSAC Plane Segmentation
 
+<p align="center"> <img src="./misc/"> </p>
+
 ## Extract inliers and outliers
+
+<p align="center"> <img src="./misc/rviz_RANSAC_objects.png"> </p>
+
+<p align="center"> <img src="./misc/rviz_RANSAC_table.png"> </p>
 
 ## Euclidean Clustering
 
+<p align="center"> <img src="./misc/rviz_euclidean_cluster.png"> </p>
+
 ## Create Cluster-Mask Point Cloud to visualize each cluster separately
+
+<p align="center"> <img src="./misc/rviz_predicted_cluster.png"> </p>
+<p align="center"> <img src="./misc/rviz_predicted_objects.png"> </p>
 
 ## Convert PCL data to ROS messages
 
 ## Publish ROS messages
+
+## Test 1 - Training
+
+<p align="center"> <img src="./misc/Figure_1_test_1.png"> </p>
+
+<p align="center"> <img src="./misc/Figure_2_test_1.png"> </p>
 
 
 ### Pick and Place Setup
