@@ -74,7 +74,7 @@ def pcl_callback(ros_pcl_msg):
     outlier_filter.set_std_dev_mul_thresh(x)
     # Call the filter function
     cloud_filtered = outlier_filter.filter()
-
+    
     #----------------------------------------------------------------------------------
     # Voxel Grid Downsampling filter
     #----------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ def pcl_callback(ros_pcl_msg):
     vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
     # Call the filter function to obtain the resultant downsampled point cloud
     cloud_filtered = vox.filter()
-
+    
     #----------------------------------------------------------------------------------
     # PassThrough filter (Z Axis)
     #----------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ def pcl_callback(ros_pcl_msg):
     passthrough.set_filter_limits(axis_min, axis_max)
     # Use the filter function to obtain the resultant point cloud. 
     cloud_filtered = passthrough.filter()
-
+    
     #----------------------------------------------------------------------------------
     # PassThrough filter (Y Axis)
     #----------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ def pcl_callback(ros_pcl_msg):
     passthrough.set_filter_limits(axis_min, axis_max)
     # Use the filter function to obtain the resultant point cloud. 
     cloud_filtered = passthrough.filter()
-
+    
     #----------------------------------------------------------------------------------
     # RANSAC plane segmentation
     #----------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ def pcl_callback(ros_pcl_msg):
     extracted_table   = cloud_filtered.extract(inliers, negative=False)
     # Extract outliers (Tabletop Objects)
     extracted_objects = cloud_filtered.extract(inliers, negative=True)
-
+    
     #----------------------------------------------------------------------------------
     # Euclidean Clustering
     #----------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ def pcl_callback(ros_pcl_msg):
     # Create new cloud containing all clusters, each with unique color
     cluster_cloud = pcl.PointCloud_PointXYZRGB()
     cluster_cloud.from_list(color_cluster_point_list)
-
+    
     #----------------------------------------------------------------------------------
     # Converts a pcl PointXYZRGB to a ROS PointCloud2 message
     #----------------------------------------------------------------------------------
@@ -183,6 +183,7 @@ def pcl_callback(ros_pcl_msg):
     pcl_objects_pub.publish(ros_cloud_objects)
     pcl_table_pub.publish(ros_cloud_table)
     pcl_cluster_pub.publish(ros_cluster_cloud)
+
 
     #----------------------------------------------------------------------------------
     # Classify the clusters!
@@ -235,7 +236,7 @@ def pcl_callback(ros_pcl_msg):
         do.label = label
         do.cloud = ros_cluster
         detected_objects.append(do)
-
+        
     rospy.loginfo('Detected {} objects: {}'.format(len(detected_objects_labels), detected_objects_labels))
 
     #----------------------------------------------------------------------------------
@@ -349,7 +350,6 @@ def pr2_mover(object_list):
     send_to_yaml(yaml_filename, yaml_dict_list)
 
     return
-
 
 if __name__ == '__main__':
 
