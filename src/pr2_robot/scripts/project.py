@@ -273,7 +273,7 @@ def pr2_mover(object_list):
     yaml_dict_list = []
     
     # Update test scene number based on the selected test.
-    test_scene_num.data = 2
+    test_scene_num.data = 3
 
     #----------------------------------------------------------------------------------
     # Get Parameters
