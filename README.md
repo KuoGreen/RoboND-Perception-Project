@@ -68,10 +68,9 @@
 <p align="center"> <img src="./misc/Figure_2_test_2.png"> </p>
 
 ## Test 3 - Training
-
+| Test 3 | Values |
 | Features in Training Set: | **136** |
-|-|-|
-| Invalid Features in Training set: | 0 |
+| Invalid Features in Training set: | **0** |
 | Scores: | **[0.78571429 0.77777778 0.81481481 0.77777778 0.81481481]** |
 | Accuracy: | **0.79 (+/- 0.03)** |
 | accuracy score: | **0.7941176470588235** |
