@@ -34,10 +34,6 @@
 
 ## RANSAC Plane Segmentation
 
-<p align="center"> <img src="./misc/"> </p>
-
-## Extract inliers and outliers
-
 <p align="center"> <img src="./misc/rviz_RANSAC_objects.png"> </p>
 
 <p align="center"> <img src="./misc/rviz_RANSAC_table.png"> </p>
