@@ -61,6 +61,25 @@
 
 <p align="center"> <img src="./misc/Figure_2_test_1.png"> </p>
 
+## Test 2 - Training
+
+<p align="center"> <img src="./misc/Figure_1_test_2.png"> </p>
+
+<p align="center"> <img src="./misc/Figure_2_test_2.png"> </p>
+
+## Test 3 - Training
+
+Features in Training Set: **136**
+Invalid Features in Training set: 0
+Scores: **[0.78571429 0.77777778 0.81481481 0.77777778 0.81481481]**
+Accuracy: **0.79 (+/- 0.03)**
+accuracy score: **0.7941176470588235**
+
+
+<p align="center"> <img src="./misc/Figure_1_test_3.png"> </p>
+
+<p align="center"> <img src="./misc/Figure_2_test_3.png"> </p>
+
 
 ### Pick and Place Setup
 
