@@ -69,6 +69,7 @@
 
 ## Test 3 - Training
 | Test 3 | Values |
+|-|-|
 | Features in Training Set: | **136** |
 | Invalid Features in Training set: | **0** |
 | Scores: | **[0.78571429 0.77777778 0.81481481 0.77777778 0.81481481]** |
