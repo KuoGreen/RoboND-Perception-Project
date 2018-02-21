@@ -47,9 +47,20 @@
 <p align="center"> <img src="./misc/rviz_predicted_cluster.png"> </p>
 <p align="center"> <img src="./misc/rviz_predicted_objects.png"> </p>
 
-## Convert PCL data to ROS messages
+## Converts a pcl PointXYZRGB to a ROS PointCloud2 message
+```python
+    ros_cloud_objects = pcl_to_ros(extracted_objects)
+    ros_cloud_table   = pcl_to_ros(extracted_table)
+    ros_cluster_cloud = pcl_to_ros(cluster_cloud)
+```
 
 ## Publish ROS messages
+```python
+    pcl_objects_pub.publish(ros_cloud_objects)
+    pcl_table_pub.publish(ros_cloud_table)
+    pcl_cluster_pub.publish(ros_cluster_cloud)
+```
+
 
 ## Test 1 - Training
 | Test 1 | Values |
