@@ -68,10 +68,10 @@
 <p align="center"> <img src="./misc/Figure_2_test_2.png"> </p>
 
 ## Test 3 - Training
-|-|-|
-|Features in Training Set:| **136**|
 
-Invalid Features in Training set: 0
+| Features in Training Set: | **136** |
+|-|-|
+| Invalid Features in Training set: | 0 |
 
 Scores: **[0.78571429 0.77777778 0.81481481 0.77777778 0.81481481]**
 
