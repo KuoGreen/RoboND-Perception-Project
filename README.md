@@ -56,12 +56,28 @@
 ## Publish ROS messages
 
 ## Test 1 - Training
+| Test 1 | Values |
+|-|-|
+| Features in Training Set: | **51** |
+| Invalid Features in Training set: | **0** |
+| Scores: | **[1.  0.8 0.9 0.9 0.9]** |
+| Accuracy: | **0.90 (+/- 0.13)** |
+| accuracy score: | **0.9019607843137255** |
+
 
 <p align="center"> <img src="./misc/Figure_1_test_1.png"> </p>
 
 <p align="center"> <img src="./misc/Figure_2_test_1.png"> </p>
 
 ## Test 2 - Training
+| Test 2 | Values |
+|-|-|
+| Features in Training Set: | **85** |
+| Invalid Features in Training set: | **0** |
+| Scores: | **[0.82352941 0.82352941 0.82352941 0.64705882 0.94117647]** |
+| Accuracy: | **0.81 (+/- 0.19)** |
+| accuracy score: | **0.8117647058823529** |
+
 
 <p align="center"> <img src="./misc/Figure_1_test_2.png"> </p>
 
