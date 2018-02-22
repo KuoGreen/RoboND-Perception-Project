@@ -354,11 +354,13 @@ image of predicted objects:
 
 ## Results yaml files:
 
+The output yaml files are on the following links:
+
 [**output_1.yaml**](./misc/output_1.yaml)
+
 [**output_2.yaml**](./misc/output_2.yaml)
+
 [**output_3.yaml**](./misc/output_3.yaml)
-
-
 
 
 ### Issues faced during project
@@ -367,4 +369,4 @@ image of predicted objects:
 
 ### Future improvements
 
-
+* 
