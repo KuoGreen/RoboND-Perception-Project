@@ -280,7 +280,7 @@ Following image showing the objects with predicted names:
 
 ## Running the 3 worlds tests
 
-    Next we will be using the above mentioned pipeline to test all of the three worlds. We select the required test world by changing the following lines in `pick_place_project.launch`
+Next we will be using the above mentioned pipeline to test all of the three worlds. We select the required test world by changing the following lines in `pick_place_project.launch`
     
 ```xml
     <!--TODO:Change the world name to load different tabletop setup-->
@@ -290,7 +290,7 @@ and
 
 ```xml
     <!--TODO:Change the list name based on the scene you have loaded-->
-  <rosparam command="load" file="$(find pr2_robot)/config/pick_list_1.yaml"/>
+    <rosparam command="load" file="$(find pr2_robot)/config/pick_list_1.yaml"/>
 
 ```
 
@@ -310,6 +310,8 @@ Results are as following:
 
 <p align="center"> <img src="./misc/Figure_2_test_1.png"> </p>
 
+image of predicted objects:
+
 <p align="center"> <img src="./misc/rviz_predicted_objects_1.png"> </p>
 
 ## Test 2 - Training
@@ -325,6 +327,8 @@ Results are as following:
 <p align="center"> <img src="./misc/Figure_1_test_2.png"> </p>
 
 <p align="center"> <img src="./misc/Figure_2_test_2.png"> </p>
+
+image of predicted objects:
 
 <p align="center"> <img src="./misc/rviz_predicted_objects_2.png"> </p>
 
@@ -343,11 +347,16 @@ Results are as following:
 
 <p align="center"> <img src="./misc/Figure_2_test_3.png"> </p>
 
+image of predicted objects:
+
 <p align="center"> <img src="./misc/rviz_predicted_objects_3.png"> </p>
 
 
 ## Results yaml files:
 
+[**output_1.yaml**](./misc/output_1.yaml)
+[**output_2.yaml**](./misc/output_2.yaml)
+[**output_3.yaml**](./misc/output_3.yaml)
 
 
 
