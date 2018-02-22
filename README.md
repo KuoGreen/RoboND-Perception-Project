@@ -117,8 +117,33 @@ again axis_min and axis_max was selected from RViz by reading the values of the 
 
 ## RANSAC Plane Segmentation
 
+Next we need to remove the table itself from the scene. To do this we will use a popular technique known as Random Sample Consensus or "RANSAC". RANSAC is an algorithm, that we can use to identify points in our dataset that belong to a particular model. In the case of the 3D scene we are working with here, the model we choose could be a plane, a cylinder, a box, or any other common shape. Since the top of the table in the scene is the single most prominent plane, after ground removal, we can effectively use RANSAC to identify points that belong to the table and discard/filter out those points.
+
+code is as following:
+
+```python
+    # Create the segmentation object
+    seg = cloud_filtered.make_segmenter()
+    # Set the model you wish to fit 
+    seg.set_model_type(pcl.SACMODEL_PLANE)
+    seg.set_method_type(pcl.SAC_RANSAC)
+    # Max distance for a point to be considered fitting the model
+    # Experiment with different values for max_distance 
+    # for segmenting the table
+    max_distance = 0.006
+    seg.set_distance_threshold(max_distance)
+    # Call the segment function to obtain set of inlier indices and model coefficients
+    inliers, coefficients = seg.segment()
+    # Extract inliers (Table)
+    extracted_table   = cloud_filtered.extract(inliers, negative=False)
+    # Extract outliers (Tabletop Objects)
+    extracted_objects = cloud_filtered.extract(inliers, negative=True)
+```
+
+Image of the objects:
 <p align="center"> <img src="./misc/rviz_RANSAC_objects.png"> </p>
 
+Image of the table:
 <p align="center"> <img src="./misc/rviz_RANSAC_table.png"> </p>
 
 ## Euclidean Clustering
