@@ -243,7 +243,7 @@ def pcl_callback(ros_pcl_msg):
     # Publish the list of detected objects
     #----------------------------------------------------------------------------------
     detected_objects_pub.publish(detected_objects)
-
+    '''
     #----------------------------------------------------------------------------------
     # Invoke pr2_mover() function
     #----------------------------------------------------------------------------------
@@ -254,7 +254,7 @@ def pcl_callback(ros_pcl_msg):
             pass
     else:
         rospy.logwarn('No detected objects !!!')
-    
+    '''
     return
     
 #----------------------------------------------------------------------------------
