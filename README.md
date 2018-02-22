@@ -148,11 +148,47 @@ Image of the table:
 
 ## Euclidean Clustering
 
-<p align="center"> <img src="./misc/rviz_euclidean_cluster.png"> </p>
+Last filtering step is to use **PCL's Euclidean Clustering** algorithm to segment the remaining points into individual objects. code is as following:
+
+```python
+    white_cloud = XYZRGB_to_XYZ(extracted_objects)
+    tree = white_cloud.make_kdtree()
+    # Create a cluster extraction object
+    ec = white_cloud.make_EuclideanClusterExtraction()
+    # Set tolerances for distance threshold 
+    # as well as minimum and maximum cluster size (in points)
+    ec.set_ClusterTolerance(0.03)
+    ec.set_MinClusterSize(10)
+    ec.set_MaxClusterSize(9000)
+    # Search the k-d tree for clusters
+    ec.set_SearchMethod(tree)
+    # Extract indices for each of the discovered clusters
+    cluster_indices = ec.Extract()
+```
 
 ## Create Cluster-Mask Point Cloud to visualize each cluster separately
 
-<p align="center"> <img src="./misc/rviz_predicted_cluster.png"> </p>
+Then we use the following code to add a color for each segmented object:
+
+```python
+    # Assign a color corresponding to each segmented object in scene
+    cluster_color = get_color_list(len(cluster_indices))
+    color_cluster_point_list = []
+    for j, indices in enumerate(cluster_indices):
+        for i, indice in enumerate(indices):
+            color_cluster_point_list.append([white_cloud[indice][0],
+                                             white_cloud[indice][1],
+                                             white_cloud[indice][2],
+                                             rgb_to_float(cluster_color[j])])
+    # Create new cloud containing all clusters, each with unique color
+    cluster_cloud = pcl.PointCloud_PointXYZRGB()
+    cluster_cloud.from_list(color_cluster_point_list)
+ ```
+
+resulting objects image:
+
+<p align="center"> <img src="./misc/rviz_euclidean_cluster.png"> </p>
+
 
 ## Converts a pcl PointXYZRGB to a ROS PointCloud2 message
 ```python
@@ -168,6 +204,72 @@ Image of the table:
     pcl_cluster_pub.publish(ros_cluster_cloud)
 ```
 
+
+## Object Prediction
+
+    Having the segmented objects, now we can use the SVM algorithm to predict each object:
+
+```python
+    detected_objects_labels = []
+    detected_objects = []
+
+    for index, pts_list in enumerate(cluster_indices):
+
+        #----------------------------------------------------------------------------------
+        # Grab the points for the cluster from the extracted_objects
+        #----------------------------------------------------------------------------------
+        pcl_cluster = extracted_objects.extract(pts_list)
+        # Convert the cluster from pcl to ROS using helper function
+        ros_cluster = pcl_to_ros(pcl_cluster)
+
+        #----------------------------------------------------------------------------------
+        # Generate Histograms
+        #----------------------------------------------------------------------------------
+        # Color Histogram
+        c_hists = compute_color_histograms(ros_cluster, using_hsv=True)
+        # Normals Histogram
+        normals = get_normals(ros_cluster)
+        n_hists = compute_normal_histograms(normals)
+        
+        #----------------------------------------------------------------------------------
+        # Generate feature by concatenate of color and normals.
+        #----------------------------------------------------------------------------------
+        feature = np.concatenate((c_hists, n_hists))
+        
+        #----------------------------------------------------------------------------------
+        # Make the prediction
+        #----------------------------------------------------------------------------------
+        # Retrieve the label for the result and add it to detected_objects_labels list
+        prediction = clf.predict(scaler.transform(feature.reshape(1,-1)))
+        label = encoder.inverse_transform(prediction)[0]
+        detected_objects_labels.append(label)
+
+        #----------------------------------------------------------------------------------
+        # Publish a label into RViz
+        #----------------------------------------------------------------------------------
+        label_pos = list(white_cloud[pts_list[0]])
+        label_pos[2] += .2
+        object_markers_pub.publish(make_label(label,label_pos, index))
+
+
+        # Add the detected object to the list of detected objects.
+        #----------------------------------------------------------------------------------
+        do = DetectedObject()
+        do.label = label
+        do.cloud = ros_cluster
+        detected_objects.append(do)
+        
+    rospy.loginfo('Detected {} objects: {}'.format(len(detected_objects_labels), detected_objects_labels))
+
+    #----------------------------------------------------------------------------------
+    # Publish the list of detected objects
+    #----------------------------------------------------------------------------------
+    detected_objects_pub.publish(detected_objects)
+  ```
+
+Following image showing the objects with predicted names:
+
+<p align="center"> <img src="./misc/rviz_predicted_cluster.png"> </p>
 
 ## Test 1 - Training
 | Test 1 | Values |
