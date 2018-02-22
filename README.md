@@ -13,22 +13,42 @@
 
 # The Perception Pipeline
 
-.
+Following sections will explain the different stages of the percption pipeline used to detect objects before starting the pick and place robot movement.
 
 
-## Convert ROS msg to PCL data
+## Select topic and convert ROS msg to PCL data
 
 The first step in the perception pipeline is to subscribe to the the camera data (point cloud) topic `/pr2/world/points` from which we will get a point cloud with noise as seen below:
 
 <p align="center"> <img src="./misc/rviz_world_points.png"> </p>
 
-before we can process the data we need to convert it from **ROS PointCloud2** message to a **PCL PointXYZRGB** formatusing the following code:
+before we can process the data we need to convert it from **ROS PointCloud2** message to a **PCL PointXYZRGB** format using the following code:
 
 ```python
 cloud_filtered = ros_to_pcl(ros_pcl_msg)
 ```
 
 ## Statistical Outlier Filtering
+
+First filter is the  **PCL’s Statistical Outlier Removal** filter. in this filter for each point in the point cloud, it computes the distance to all of its neighbors, and then calculates a mean distance. By assuming a Gaussian distribution, all points whose mean distances are outside of an interval defined by the global distances mean+standard deviation are considered to be outliers and removed from the point cloud.
+
+Code is as following:
+
+```python
+    # Create a statistical filter object: 
+    outlier_filter = cloud_filtered.make_statistical_outlier_filter()
+    # Set the number of neighboring points to analyze for any given point
+    outlier_filter.set_mean_k(3)
+    # Set threshold scale factor
+    x = 0.00001
+    # Any point with a mean distance larger than global (mean distance+x*std_dev)
+    # will be considered outlier
+    outlier_filter.set_std_dev_mul_thresh(x)
+    # Call the filter function
+    cloud_filtered = outlier_filter.filter()
+```
+Mean K = 3 was the best value I found to almost remove all noise pixels. any value higher than 3 was leaving some of the noise pixels behind. x was selcted to be 0.00001.
+
 
 <p align="center"> <img src="./misc/rviz_statstical_filter.png"> </p>
 
