@@ -11,12 +11,22 @@
 
 
 
-# The processing pipeline
+# The Perception Pipeline
+
+.
+
 
 ## Convert ROS msg to PCL data
 
+The first step in the perception pipeline is to subscribe to the the camera data (point cloud) topic `/pr2/world/points` from which we will get a point cloud with noise as seen below:
+
 <p align="center"> <img src="./misc/rviz_world_points.png"> </p>
 
+before we can process the data we need to convert it from **ROS PointCloud2** message to a **PCL PointXYZRGB** formatusing the following code:
+
+```python
+cloud_filtered = ros_to_pcl(ros_pcl_msg)
+```
 
 ## Statistical Outlier Filtering
 
