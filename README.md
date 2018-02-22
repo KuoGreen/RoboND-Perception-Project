@@ -191,6 +191,9 @@ resulting objects image:
 
 
 ## Converts a pcl PointXYZRGB to a ROS PointCloud2 message
+
+Befor we can publish the processed point clouds we need to convert the format back from **PCL PointXYZRGB** to **ROS PointCloud2** message:
+
 ```python
     ros_cloud_objects = pcl_to_ros(extracted_objects)
     ros_cloud_table   = pcl_to_ros(extracted_table)
@@ -198,6 +201,9 @@ resulting objects image:
 ```
 
 ## Publish ROS messages
+
+finally we publish to required topics:
+
 ```python
     pcl_objects_pub.publish(ros_cloud_objects)
     pcl_table_pub.publish(ros_cloud_table)
@@ -270,6 +276,25 @@ resulting objects image:
 Following image showing the objects with predicted names:
 
 <p align="center"> <img src="./misc/rviz_predicted_cluster.png"> </p>
+
+
+## Running the 3 worlds tests
+
+    Next we will be using the above mentioned pipeline to test all of the three worlds. We select the required test world by changing the following lines in `pick_place_project.launch`
+    
+```xml
+    <!--TODO:Change the world name to load different tabletop setup-->
+    <arg name="world_name" value="$(find pr2_robot)/worlds/test1.world"/>
+```
+and
+
+```xml
+    <!--TODO:Change the list name based on the scene you have loaded-->
+  <rosparam command="load" file="$(find pr2_robot)/config/pick_list_1.yaml"/>
+
+```
+
+Results are as following:
 
 ## Test 1 - Training
 | Test 1 | Values |
