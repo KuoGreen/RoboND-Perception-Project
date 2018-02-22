@@ -49,10 +49,28 @@ Code is as following:
 ```
 Mean K = 3 was the best value I found to almost remove all noise pixels. any value higher than 3 was leaving some of the noise pixels behind. x was selcted to be 0.00001.
 
+following image is showing result after removal of noise:
 
 <p align="center"> <img src="./misc/rviz_statstical_filter.png"> </p>
 
 ## Voxel Grid Downsampling
+
+2nd stage is **Voxel Grid Downsampling** filter to derive a point cloud that has fewer points but should still do a good job of representing the input point cloud as a whole. This is done to reduce required computation power without impacting the final results. Code is as following:
+
+```python
+    # Create a VoxelGrid filter object for our input point cloud
+    vox = cloud_filtered.make_voxel_grid_filter()
+    # Choose a voxel (also known as leaf) size
+    # 1 means 1mx1mx1m leaf size   
+    LEAF_SIZE = 0.005  
+    # Set the voxel (or leaf) size  
+    vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
+    # Call the filter function to obtain the resultant downsampled point cloud
+    cloud_filtered = vox.filter()
+```
+After trying diffrent sizes I have selected leaf size 0.005 to avoid any impact on point cloud details.
+
+result is as shown in below image:
 
 <p align="center"> <img src="./misc/rviz_voxel_filter.png"> </p>
 
