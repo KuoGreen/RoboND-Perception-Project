@@ -81,7 +81,7 @@ def pcl_callback(ros_pcl_msg):
     # Create a VoxelGrid filter object for our input point cloud
     vox = cloud_filtered.make_voxel_grid_filter()
     # Choose a voxel (also known as leaf) size
-    # Note: this (1) means 1mx1mx1m is a poor choice of leaf size   
+    # 1 means 1mx1mx1m leaf size   
     # Experiment and find the appropriate size!
     LEAF_SIZE = 0.005  
     # Set the voxel (or leaf) size  
@@ -243,7 +243,7 @@ def pcl_callback(ros_pcl_msg):
     # Publish the list of detected objects
     #----------------------------------------------------------------------------------
     detected_objects_pub.publish(detected_objects)
-    '''
+    
     #----------------------------------------------------------------------------------
     # Invoke pr2_mover() function
     #----------------------------------------------------------------------------------
@@ -254,7 +254,7 @@ def pcl_callback(ros_pcl_msg):
             pass
     else:
         rospy.logwarn('No detected objects !!!')
-    '''
+    
     return
     
 #----------------------------------------------------------------------------------
@@ -280,6 +280,7 @@ def pr2_mover(object_list):
     #----------------------------------------------------------------------------------
     object_list_param = rospy.get_param('/object_list')
     dropbox_param     = rospy.get_param('/dropbox')
+
     '''
     #----------------------------------------------------------------------------------
     # Rotate PR2 in place to capture side tables for the collision map
@@ -293,6 +294,7 @@ def pr2_mover(object_list):
     # Rotate Center
     pr2_base_mover_pub.publish(0)
     '''
+    
     #----------------------------------------------------------------------------------
     # Calculate detected objects centroids.
     #----------------------------------------------------------------------------------
