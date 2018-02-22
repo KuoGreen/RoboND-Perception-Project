@@ -108,6 +108,7 @@
 
 <p align="center"> <img src="./misc/Figure_2_test_3.png"> </p>
 
+<p align="center"> <img src="./misc/rviz_predicted_objects_3.png"> </p>
 
 ### Issues faced during project
 
