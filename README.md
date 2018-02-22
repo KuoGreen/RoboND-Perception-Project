@@ -76,9 +76,44 @@ result is as shown in below image:
 
 ## PassThrough Filter
 
+3rd stage is PassThrough filter which works much like a cropping tool allowing to crop any given 3D point cloud by specifying an axis with cut-off values along that axis. The region you allow to pass through, is often referred to as region of interest.
+
+In our case I have applyed the filter two times, 1st one along **Z axis** to select only the table top and objects on it as shown in below code:
+
+```python
+    # Create a PassThrough filter object.
+    passthrough = cloud_filtered.make_passthrough_filter()
+    # Assign axis and range to the passthrough filter object.
+    filter_axis = 'z'
+    passthrough.set_filter_field_name(filter_axis)
+    axis_min = 0.6095
+    axis_max = 1.1
+    passthrough.set_filter_limits(axis_min, axis_max)
+    # Use the filter function to obtain the resultant point cloud. 
+    cloud_filtered = passthrough.filter()
+```
+axis_min and axis_max was picked from RViz directly by reading the edge pixels values.
+
 <p align="center"> <img src="./misc/rviz_passthrough_z_filter.png"> </p>
 
+2nd one is along **Y axis** to remove the unwanted left and right edges of the table. Code is as following:
+
+```python
+    # Create a PassThrough filter object.
+    passthrough = cloud_filtered.make_passthrough_filter()
+    # Assign axis and range to the passthrough filter object.
+    filter_axis = 'y'
+    passthrough.set_filter_field_name(filter_axis)
+    axis_min = -0.456
+    axis_max =  0.456
+    passthrough.set_filter_limits(axis_min, axis_max)
+    # Use the filter function to obtain the resultant point cloud. 
+    cloud_filtered = passthrough.filter()
+```
+again axis_min and axis_max was selected from RViz by reading the values of the edge pixels.
+
 <p align="center"> <img src="./misc/rviz_passthrough_y_filter.png"> </p>
+
 
 ## RANSAC Plane Segmentation
 
