@@ -351,7 +351,7 @@ image of predicted objects:
 
 <p align="center"> <img src="./misc/rviz_predicted_objects_3.png"> </p>
 
-
+## 
 ## Results yaml files:
 
 The output yaml files are on the following links:
@@ -364,6 +364,9 @@ The output yaml files are on the following links:
 
 
 ### Issues faced during project
+
+<p align="center"> <img src="./misc/gazebo.png"> </p>
+
 
 * When compliling using `catkin_make` I used to get error "cannot convert to bool". I resolved it by adding `static_cast<bool>()`. [see this ](https://robotics.stackexchange.com/questions/14801/catkin-make-unable-to-build-and-throws-makefile138-recipe-for-target-all-fa)
 
