@@ -280,7 +280,7 @@ def pr2_mover(object_list):
     #----------------------------------------------------------------------------------
     object_list_param = rospy.get_param('/object_list')
     dropbox_param     = rospy.get_param('/dropbox')
-    
+    '''
     #----------------------------------------------------------------------------------
     # Rotate PR2 in place to capture side tables for the collision map
     #----------------------------------------------------------------------------------
@@ -292,7 +292,7 @@ def pr2_mover(object_list):
     rospy.sleep(30.0)
     # Rotate Center
     pr2_base_mover_pub.publish(0)
-    
+    '''
     #----------------------------------------------------------------------------------
     # Calculate detected objects centroids.
     #----------------------------------------------------------------------------------
