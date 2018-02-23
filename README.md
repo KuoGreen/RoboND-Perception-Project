@@ -9,9 +9,23 @@
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/1067/view) Points
 
+# Project Code
+[Project code file](./src/pr2_robot/scripts/project.py) is consisting of the following major parts:
 
+* Required python imports
+* helper functions
+* pcl_callback() function
+* pr2_mover function
 
-# The Perception Pipeline
+I will be explaning each part in this writeup.
+
+# Python Imports
+
+# Helpder Functions
+
+# pcl_callback() function
+
+## The Perception Pipeline
 
 Following sections will explain the different stages of the percption pipeline used to detect objects before starting the pick and place robot movement.
 
@@ -277,8 +291,73 @@ Following image showing the objects with predicted names:
 
 <p align="center"> <img src="./misc/rviz_predicted_cluster.png"> </p>
 
+## Invoking PR2 Mover Function
 
-## Running the 3 worlds tests
+   Last part of `pcl_callback()` function is to call the PR2 mover to pick and place detected objects.
+
+```python
+    if len(detected_objects)>0:
+        try:
+            pr2_mover(detected_objects)
+        except rospy.ROSInterruptException:
+            pass
+    else:
+        rospy.logwarn('No detected objects !!!')
+```
+
+# PR2_Mover function
+
+
+# Creating ROS Node, Subscribers, and Publishers.
+
+Following code is to create all required ROS node, subscribers, and publishers.
+
+```python
+if __name__ == '__main__':
+
+    #----------------------------------------------------------------------------------
+    # ROS node initialization
+    #----------------------------------------------------------------------------------
+    rospy.init_node('clustering', anonymous=True)
+
+    #----------------------------------------------------------------------------------
+    # Create Subscribers
+    #----------------------------------------------------------------------------------
+    pcl_sub = rospy.Subscriber("/pr2/world/points", pc2.PointCloud2, pcl_callback, queue_size=1)
+
+    #----------------------------------------------------------------------------------
+    # Create Publishers
+    #----------------------------------------------------------------------------------
+    pcl_objects_pub      = rospy.Publisher("/pcl_objects"     , PointCloud2,          queue_size=1)
+    pcl_table_pub        = rospy.Publisher("/pcl_table"       , PointCloud2,          queue_size=1)
+    pcl_cluster_pub      = rospy.Publisher("/pcl_cluster"     , PointCloud2,          queue_size=1)
+    object_markers_pub   = rospy.Publisher("/object_markers"  , Marker,               queue_size=1)
+    detected_objects_pub = rospy.Publisher("/detected_objects", DetectedObjectsArray, queue_size=1)
+    pr2_base_mover_pub   = rospy.Publisher("/pr2/world_joint_controller/command", Float64, queue_size=10)
+
+    # Initialize color_list
+    get_color_list.color_list = []
+
+    #----------------------------------------------------------------------------------
+    # Load Model From disk
+    #----------------------------------------------------------------------------------
+    model = pickle.load(open('model.sav', 'rb'))
+    clf = model['classifier']
+    encoder = LabelEncoder()
+    encoder.classes_ = model['classes']
+    scaler = model['scaler']
+
+    #----------------------------------------------------------------------------------
+    # Spin while node is not shutdown
+    #----------------------------------------------------------------------------------
+    while not rospy.is_shutdown():
+        rospy.spin()
+
+    #----------------------------------------------------------------------------------
+```
+
+
+# Running the 3 worlds tests
 
 Next we will be using the above mentioned pipeline to test all of the three worlds. We select the required test world by changing the following lines in `pick_place_project.launch`
     
