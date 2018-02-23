@@ -578,9 +578,9 @@ Results are as following:
 |-|-|
 | Features in Training Set: | **51** |
 | Invalid Features in Training set: | **0** |
-| Scores: | **[1.  0.8 0.9 0.9 0.9]** |
-| Accuracy: | **0.90 (+/- 0.13)** |
-| accuracy score: | **0.9019607843137255** |
+| Scores: | **[1. 1. 1. 1. 1.]** |
+| Accuracy: | **1.00 (+/- 0.00)** |
+| accuracy score: | **1.0** |
 
 
 <p align="center"> <img src="./misc/Figure_1_test_1.png"> </p>
