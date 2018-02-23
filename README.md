@@ -391,6 +391,8 @@ Following image showing the objects with predicted names:
 
 # PR2_Mover function
 
+First step in mover fuction is to initialize variables including ROS messages.
+
 ## Initialize variables
 
 ```python
