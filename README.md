@@ -294,7 +294,7 @@ finally we publish to required topics:
 
 ## Object Prediction
 
-    Having the segmented objects, now we can use the SVM algorithm to predict each object:
+Having the segmented objects, now we can use the SVM algorithm to predict each object:
 
 ```python
     detected_objects_labels = []
@@ -373,6 +373,105 @@ Following image showing the objects with predicted names:
 ```
 
 # PR2_Mover function
+
+## Initialize variables
+
+```python
+    test_scene_num = Int32()
+    object_name    = String()
+    pick_pose      = Pose()
+    place_pose     = Pose()
+    arm_name       = String()
+    yaml_dict_list = []
+    
+    # Update test scene number based on the selected test.
+    test_scene_num.data = 3
+```
+
+## Get Parameters fro ROS parameters server
+
+```python
+    object_list_param = rospy.get_param('/object_list')
+    dropbox_param     = rospy.get_param('/dropbox')
+```
+
+
+## Rotate PR2 in place to capture side tables for the collision map
+
+```python
+    # Rotate Right
+    pr2_base_mover_pub.publish(-1.57)
+    rospy.sleep(15.0)
+    # Rotate Left
+    pr2_base_mover_pub.publish(1.57)
+    rospy.sleep(30.0)
+    # Rotate Center
+    pr2_base_mover_pub.publish(0)
+```
+
+## Calculate detected objects centroids.
+
+```python
+    labels = []
+    centroids = [] # to be list of tuples (x, y, z)
+    for object in object_list:
+        labels.append(object.label)
+        points_arr = ros_to_pcl(object.cloud).to_array()
+        centroids.append(np.mean(points_arr, axis=0)[:3])
+```
+
+## Loop through the pick list
+
+```python
+    for i in range(0, len(object_list_param)):
+        
+        
+        # Read object name and group from object list.
+        object_name.data = object_list_param[i]['name' ]
+        object_group     = object_list_param[i]['group']
+
+        # Select pick pose
+        try:
+            index = labels.index(object_name.data)
+        except ValueError:
+            print "Object not detected: %s" %object_name.data
+            continue
+
+        pick_pose.position.x = np.asscalar(centroids[index][0])
+        pick_pose.position.y = np.asscalar(centroids[index][1])
+        pick_pose.position.z = np.asscalar(centroids[index][2])
+
+        # Select place pose
+        position = search_dictionaries('group', object_group, 'position', dropbox_param)
+        place_pose.position.x = position[0]
+        place_pose.position.y = position[1]
+        place_pose.position.z = position[2]
+
+        # Select the arm to be used for pick_place
+        arm_name.data = search_dictionaries('group', object_group, 'name', dropbox_param)
+
+        # Create a list of dictionaries for later output to yaml format
+        yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
+        yaml_dict_list.append(yaml_dict)
+
+        # Wait for 'pick_place_routine' service to come up
+        rospy.wait_for_service('pick_place_routine')
+        try:
+            pick_place_routine = rospy.ServiceProxy('pick_place_routine', PickPlace)
+            # Insert your message variables to be sent as a service request
+            resp = pick_place_routine(test_scene_num, object_name, arm_name, pick_pose, place_pose)
+            print ("Response: ",resp.success)
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+```
+
+## Writing yaml files to disk
+
+```python
+    yaml_filename = 'output_'+str(test_scene_num.data)+'.yaml'
+    send_to_yaml(yaml_filename, yaml_dict_list)
+```
+
 
 
 # Creating ROS Node, Subscribers, and Publishers.
@@ -497,8 +596,8 @@ image of predicted objects:
 
 <p align="center"> <img src="./misc/rviz_predicted_objects_3.png"> </p>
 
-## 
-## Results yaml files:
+
+# Results yaml files:
 
 The output yaml files are on the following links:
 
@@ -509,14 +608,14 @@ The output yaml files are on the following links:
 [**output_3.yaml**](./misc/output_3.yaml)
 
 
-### Issues faced during project
+# Issues faced during project
 
 * When compliling using `catkin_make` I used to get error "cannot convert to bool". I resolved it by adding `static_cast<bool>()`. [see this ](https://robotics.stackexchange.com/questions/14801/catkin-make-unable-to-build-and-throws-makefile138-recipe-for-target-all-fa)
 
 * Robot was not grasping the detected objects properly in many of the cases although the arm approach is correct and graspper is closing properly. I beleive this is related to the setting of grasp close postion.
 
 
-### Future improvements
+# Future improvements
 
 * Collison avoidance need to be done as discribed in project last section. If I have more time I will work on it.
 
