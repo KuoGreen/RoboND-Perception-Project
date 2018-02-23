@@ -365,11 +365,16 @@ The output yaml files are on the following links:
 
 ### Issues faced during project
 
-<p align="center"> <img src="./misc/gazebo.png"> </p>
-
-
 * When compliling using `catkin_make` I used to get error "cannot convert to bool". I resolved it by adding `static_cast<bool>()`. [see this ](https://robotics.stackexchange.com/questions/14801/catkin-make-unable-to-build-and-throws-makefile138-recipe-for-target-all-fa)
+
+* Robot was not grasping the detected objects properly in many of the cases although the arm approach is correct and graspper is closing properly. I beleive this is related to the setting of grasp close postion.
+
 
 ### Future improvements
 
-* 
+* Collison avoidance need to be done as discribed in project last section. If I have more time I will work on it.
+
+* We can go through the object detection pipline once after everytime we pick an object, this will give better results in crowded table case like test 3.
+
+
+<p align="center"> <img src="./misc/gazebo.png"> </p>
