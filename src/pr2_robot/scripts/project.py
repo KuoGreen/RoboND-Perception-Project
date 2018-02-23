@@ -382,7 +382,7 @@ if __name__ == '__main__':
     get_color_list.color_list = []
 
     #----------------------------------------------------------------------------------
-    # Load Model From disk
+    # Load SVM Model From disk
     #----------------------------------------------------------------------------------
     model = pickle.load(open('model.sav', 'rb'))
     clf = model['classifier']
