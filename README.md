@@ -24,7 +24,7 @@ I will be explaning each part in this writeup.
 
 In this project we used multiple python libraries including:
 
-* **numpy**: for mathmatics
+* **numpy**: for mathematics
 * **sklearn**: for SVM machine learning
 * **pickle**: to dump/load data to disk files
 * **yaml**: to generate yaml format and write it to disk.
@@ -107,11 +107,11 @@ def search_dictionaries(key1, value1, key2, list_of_dictionaries):
 
 # pcl_callback() function
 
-`pcl_callback()` is the function that will be called back everytime a message is published to `/pr2/world/points` topic. this function has the 3D point cloud perception pipeline, object detection, and a call to the PR2 mover functuion.
+`pcl_callback()` is the function that will be called back every time a message is published to `/pr2/world/points` topic. this function has the 3D point cloud perception pipeline, object detection, and a call to the PR2 mover function.
 
 ## The Perception Pipeline
 
-Following sections will explain the different stages of the percption pipeline used to detect objects before starting the pick and place robot movement.
+Following sections will explain the different stages of the perception pipeline used to detect objects before starting the pick and place robot movement.
 
 
 ## Select topic and convert ROS msg to PCL data
@@ -145,7 +145,7 @@ Code is as following:
     # Call the filter function
     cloud_filtered = outlier_filter.filter()
 ```
-Mean K = 3 was the best value I found to almost remove all noise pixels. any value higher than 3 was leaving some of the noise pixels behind. x was selcted to be 0.00001.
+Mean K = 3 was the best value I found to almost remove all noise pixels. any value higher than 3 was leaving some of the noise pixels behind. x was selected to be 0.00001.
 
 following image is showing result after removal of noise:
 
@@ -166,7 +166,7 @@ following image is showing result after removal of noise:
     # Call the filter function to obtain the resultant downsampled point cloud
     cloud_filtered = vox.filter()
 ```
-After trying diffrent sizes I have selected leaf size 0.005 to avoid any impact on point cloud details.
+After trying different sizes I have selected leaf size 0.005 to avoid any impact on point cloud details.
 
 result is as shown in below image:
 
@@ -176,7 +176,7 @@ result is as shown in below image:
 
 3rd stage is PassThrough filter which works much like a cropping tool allowing to crop any given 3D point cloud by specifying an axis with cut-off values along that axis. The region you allow to pass through, is often referred to as region of interest.
 
-In our case I have applyed the filter two times, 1st one along **Z axis** to select only the table top and objects on it as shown in below code:
+In our case I have applied the filter two times, 1st one along **Z axis** to select only the table top and objects on it as shown in below code:
 
 ```python
     # Create a PassThrough filter object.
@@ -627,7 +627,11 @@ The output yaml files are on the following links:
 
 # Issues faced during project
 
-* When compliling using `catkin_make` I used to get error "cannot convert to bool". I resolved it by adding `static_cast<bool>()`. [see this ](https://robotics.stackexchange.com/questions/14801/catkin-make-unable-to-build-and-throws-makefile138-recipe-for-target-all-fa)
+* When compiling using catkin_make I used to get error "cannot convert to bool". I resolved it by adding `static_cast<bool>()`. [see this ](https://robotics.stackexchange.com/questions/14801/catkin-make-unable-to-build-and-throws-makefile138-recipe-for-target-all-fa)
+
+
+* Robot was not grasping the detected objects properly in many of the cases although the arm approach is correct and grasper is closing properly. I believe this is related to the setting of grasp close position.
+
 
 * Robot was not grasping the detected objects properly in many of the cases although the arm approach is correct and graspper is closing properly. I beleive this is related to the setting of grasp close postion.
 
