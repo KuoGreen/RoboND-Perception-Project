@@ -313,8 +313,9 @@ finally we publish to required topics:
 
 Having the segmented objects, now we can use the SVM algorithm to predict each object. We will be using code that was developed in previous exercises:
 
-[Capture Features](./src/sensor_stick/scripts/capture_features.py)
-[Train SVM](./src/sensor_stick/scripts/train_svm.py)
+[Capture Features code](./src/sensor_stick/scripts/capture_features.py)
+
+[Train SVM code](./src/sensor_stick/scripts/train_svm.py)
 
 
 ```python
