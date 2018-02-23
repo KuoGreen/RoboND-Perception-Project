@@ -31,15 +31,15 @@ if __name__ == '__main__':
         #'bowl',
         #'create',
         #'disk_part',
-        'eraser',
+        #'eraser',
         'glue',
         #'hammer',
         #'plastic_cup',
-        'snacks',
+        #'snacks',
         'soap',
         'soap2',
         #'soda_can',
-        'sticky_notes'
+        #'sticky_notes'
         ]
 
 
