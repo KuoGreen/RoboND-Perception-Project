@@ -22,6 +22,23 @@ I will be explaning each part in this writeup.
 
 # Python Imports
 
+In this project we used multiple python libraries including:
+
+* **numpy**: for mathmatics
+* **sklearn**: for SVM machine learning
+* **pickle**: to dump/load data to disk files
+* **yaml**: to generate yaml format and write it to disk.
+
+Some of the ROS libraries:
+
+* **rospy**: ROS python library
+* **tf**: ROS transforms library
+* **ros visualization_msgs**: ROS marker visualization library
+* ros messages formats and converters.
+
+and functions from **sensor_stick** exercises.
+
+
 ```python
 import numpy as np
 import sklearn
