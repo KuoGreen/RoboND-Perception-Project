@@ -407,6 +407,8 @@ Following image showing the objects with predicted names:
 
 ## Get Parameters fro ROS parameters server
 
+read objects list and drop box data from ROS parameters server.
+
 ```python
     object_list_param = rospy.get_param('/object_list')
     dropbox_param     = rospy.get_param('/dropbox')
@@ -414,6 +416,8 @@ Following image showing the objects with predicted names:
 
 
 ## Rotate PR2 in place to capture side tables for the collision map
+
+This is to rotate PR2 to capture side tables data to avoid collision. This can be further enhanced as mentioned in last section of project text.
 
 ```python
     # Rotate Right
@@ -428,6 +432,8 @@ Following image showing the objects with predicted names:
 
 ## Calculate detected objects centroids.
 
+here we will calculate the centroid (x,y,z) of each detected object based on its points array.
+
 ```python
     labels = []
     centroids = [] # to be list of tuples (x, y, z)
@@ -438,6 +444,8 @@ Following image showing the objects with predicted names:
 ```
 
 ## Loop through the pick list
+
+in this loop we will be picking each object from the pick-list we received through ROS parameter server and match it to one of the detected objects to decide on pick pose, place pose, and arm name. We will write all date to yaml file.
 
 ```python
     for i in range(0, len(object_list_param)):
@@ -484,12 +492,12 @@ Following image showing the objects with predicted names:
 
 ## Writing yaml files to disk
 
+file will be automatically named based on the selected test number (1-3).
+
 ```python
     yaml_filename = 'output_'+str(test_scene_num.data)+'.yaml'
     send_to_yaml(yaml_filename, yaml_dict_list)
 ```
-
-
 
 # Creating ROS Node, Subscribers, and Publishers.
 
@@ -631,10 +639,6 @@ The output yaml files are on the following links:
 
 
 * Robot was not grasping the detected objects properly in many of the cases although the arm approach is correct and grasper is closing properly. I believe this is related to the setting of grasp close position.
-
-
-* Robot was not grasping the detected objects properly in many of the cases although the arm approach is correct and graspper is closing properly. I beleive this is related to the setting of grasp close postion.
-
 
 # Future improvements
 
