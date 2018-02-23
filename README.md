@@ -596,9 +596,9 @@ image of predicted objects:
 |-|-|
 | Features in Training Set: | **85** |
 | Invalid Features in Training set: | **0** |
-| Scores: | **[0.82352941 0.82352941 0.82352941 0.64705882 0.94117647]** |
-| Accuracy: | **0.81 (+/- 0.19)** |
-| accuracy score: | **0.8117647058823529** |
+| Scores: | **[1. 0.82352941 1.  1.  1.  ]** |
+| Accuracy: | **0.96 (+/- 0.14)** |
+| accuracy score: | **0.9647058823529412** |
 
 
 <p align="center"> <img src="./misc/Figure_1_test_2.png"> </p>
