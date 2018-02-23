@@ -16,14 +16,81 @@
 * helper functions
 * pcl_callback() function
 * pr2_mover function
+* Creating ROS Node, Subscribers, and Publishers
 
 I will be explaning each part in this writeup.
 
 # Python Imports
 
+```python
+import numpy as np
+import sklearn
+from sklearn.preprocessing import LabelEncoder
+import pickle
+from sensor_stick.srv import GetNormals
+from sensor_stick.features import compute_color_histograms
+from sensor_stick.features import compute_normal_histograms
+from visualization_msgs.msg import Marker
+from sensor_stick.marker_tools import *
+from sensor_stick.msg import DetectedObjectsArray
+from sensor_stick.msg import DetectedObject
+from sensor_stick.pcl_helper import *
+
+import rospy
+import tf
+from geometry_msgs.msg import Pose
+from std_msgs.msg import Float64
+from std_msgs.msg import Int32
+from std_msgs.msg import String
+from pr2_robot.srv import *
+from rospy_message_converter import message_converter
+import yaml
+```
+
+
+
 # Helpder Functions
 
+
+```python
+# Helper function to get surface normals
+def get_normals(cloud):
+    get_normals_prox = rospy.ServiceProxy('/feature_extractor/get_normals', GetNormals)
+    return get_normals_prox(cloud).cluster
+```
+
+```python
+# Helper function to create a yaml friendly dictionary from ROS messages
+def make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose):
+    yaml_dict = {}
+    yaml_dict["test_scene_num"] = test_scene_num.data
+    yaml_dict["arm_name"]  = arm_name.data
+    yaml_dict["object_name"] = object_name.data
+    yaml_dict["pick_pose"] = message_converter.convert_ros_message_to_dictionary(pick_pose)
+    yaml_dict["place_pose"] = message_converter.convert_ros_message_to_dictionary(place_pose)
+    return yaml_dict
+```
+
+```python
+# Helper function to output to yaml file
+def send_to_yaml(yaml_filename, yaml_dict_list):
+    data_dict = {"object_list": yaml_dict_list}
+    with open(yaml_filename, 'w') as outfile:
+        yaml.dump(data_dict, outfile, default_flow_style=False)
+```
+
+```python
+# Function to search list of dictionaries and return a selected value in selected dictionary
+def search_dictionaries(key1, value1, key2, list_of_dictionaries):
+    selected_dic = [element for element in list_of_dictionaries if element[key1] == value1][0]
+    selected_val = selected_dic.get(key2)
+    return selected_val
+```
+
+
 # pcl_callback() function
+
+`pcl_callback()` is the function that will be called back everytime a message is published to `/pr2/world/points` topic. this function has the 3D point cloud perception pipeline, object detection, and a call to the PR2 mover functuion.
 
 ## The Perception Pipeline
 
