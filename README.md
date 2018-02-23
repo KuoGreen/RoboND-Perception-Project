@@ -655,10 +655,15 @@ The output yaml files are on the following links:
 
 # Tips
 
-PCL documentation : http://strawlab.github.io/python-pcl/
-RANSAC algorithm : http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/FISHER/RANSAC/
-Outlier Removal (paper) : http://people.csail.mit.edu/changil/assets/point-cloud-noise-removal-3dv-2016-wolff-et-al.pdf
-Clustering Algorithm : http://bit.ly/clustering-tutorial
-Segmentation with NN (intro) : http://bit.ly/segmentation-intro-nn
+* PCL documentation : http://strawlab.github.io/python-pcl/
+
+* RANSAC algorithm : http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/FISHER/RANSAC/
+
+* Outlier Removal (paper) : http://people.csail.mit.edu/changil/assets/point-cloud-noise-removal-3dv-2016-wolff-et-al.pdf
+
+* Clustering Algorithm : http://bit.ly/clustering-tutorial
+
+* Segmentation with NN (intro) : http://bit.ly/segmentation-intro-nn
+
 
 <p align="center"> <img src="./misc/gazebo.png"> </p>
