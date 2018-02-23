@@ -316,7 +316,11 @@ def pr2_mover(object_list):
         object_group     = object_list_param[i]['group']
 
         # Select pick pose
-        index = labels.index(object_name.data)
+        try:
+            index = labels.index(object_name.data)
+        except ValueError:
+            continue
+
         pick_pose.position.x = np.asscalar(centroids[index][0])
         pick_pose.position.y = np.asscalar(centroids[index][1])
         pick_pose.position.z = np.asscalar(centroids[index][2])
