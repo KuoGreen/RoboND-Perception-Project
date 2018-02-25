@@ -313,6 +313,8 @@ finally we publish to required topics:
 
 Having the segmented objects, now we can use the SVM algorithm to predict each object. We will be using code that was developed in previous exercises:
 
+Following are helper functions used to capture features:
+
 ## compute_color_histograms() function
 ```python
 def compute_color_histograms(cloud, using_hsv=False):
@@ -398,6 +400,7 @@ def compute_normal_histograms(normal_cloud):
 
     return normed_features
 ```
+Full code for capturing features and training SVM:
 
 [Features code](./src/sensor_stick/src/sensor_stick/features.py)
 
@@ -405,6 +408,8 @@ def compute_normal_histograms(normal_cloud):
 
 [Train SVM code](./src/sensor_stick/scripts/train_svm.py)
 
+
+Code to detect the objects using above functions:
 
 ```python
     detected_objects_labels = []
