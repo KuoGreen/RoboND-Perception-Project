@@ -653,7 +653,7 @@ The output yaml files are on the following links:
 
 * We can go through the object detection pipline once after everytime we pick an object, this will give better results in crowded table case like test 3.
 
-# Tips
+# Reference Links
 
 * PCL documentation : http://strawlab.github.io/python-pcl/
 
